@@ -115,7 +115,7 @@ if st.button("计算"):
     # 表格导出
     csv = df.to_csv(index=False).encode('utf-8')
     st.download_button(
-        label="下载还款计划为CSV",
+        label="下载还款计划",
         data=csv,
         file_name='还款计划.csv',
         mime='text/csv',
