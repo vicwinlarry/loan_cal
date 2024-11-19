@@ -112,6 +112,15 @@ if st.button("计算"):
     # 生成数据表
     df = pd.DataFrame(payments)
 
+    
+    # 输出结果
+    st.write(f"每月还款金额: {monthly_payment:.2f} 元")
+    remaining_months = len(payments)
+    years_left = remaining_months // 12
+    months_left = remaining_months % 12
+    st.write(f"剩余还款时间: {years_left} 年 {months_left} 个月")
+
+    
     # 表格导出
     csv = df.to_csv(index=False).encode('utf-8')
     st.download_button(
@@ -120,10 +129,3 @@ if st.button("计算"):
         file_name='还款计划.csv',
         mime='text/csv',
     )
-
-    # 输出结果
-    st.write(f"每月还款金额: {monthly_payment:.2f} 元")
-    remaining_months = len(payments)
-    years_left = remaining_months // 12
-    months_left = remaining_months % 12
-    st.write(f"剩余还款时间: {years_left} 年 {months_left} 个月")
