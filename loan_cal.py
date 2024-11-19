@@ -42,7 +42,7 @@ def calculate_equal_principal(principal, annual_rate, months, prepayment=0):
             payments[-1]["剩余待还本金"] = round(max(current_principal, 0), 2)
             payments[-1]["剩余待还全部"] = round(max(current_principal, 0), 2)
 
-    return payments
+    return payments, payments[-1]["总偿还"] if payments else 0
 
 def calculate_equal_installment(principal, annual_rate, months, prepayment=0):
     monthly_rate = annual_rate / 12 / 100
@@ -89,7 +89,7 @@ def calculate_equal_installment(principal, annual_rate, months, prepayment=0):
             payments[-1]["剩余待还本金"] = round(max(current_principal, 0), 2)
             payments[-1]["剩余待还全部"] = round(max(current_principal, 0), 2)
 
-    return payments
+    return payments, monthly_payment if payments else 0
 
 # Streamlit页面设置
 st.title("贷款计算器")
@@ -105,9 +105,9 @@ repayment_type = st.selectbox("贷款方式", ("等额本息", "等额本金"))
 # 按钮计算
 if st.button("计算"):
     if repayment_type == "等额本息":
-        payments = calculate_equal_installment(total_loan, current_rate, total_months, prepayment_amount)
+        payments, monthly_payment = calculate_equal_installment(total_loan, current_rate, total_months, prepayment_amount)
     elif repayment_type == "等额本金":
-        payments = calculate_equal_principal(total_loan, current_rate, total_months, prepayment_amount)
+        payments, monthly_payment = calculate_equal_principal(total_loan, current_rate, total_months, prepayment_amount)
 
     # 生成数据表
     df = pd.DataFrame(payments)
@@ -120,3 +120,10 @@ if st.button("计算"):
         file_name='还款计划.csv',
         mime='text/csv',
     )
+
+    # 输出结果
+    st.write(f"每月还款金额: {monthly_payment:.2f} 元")
+    remaining_months = len(payments)
+    years_left = remaining_months // 12
+    months_left = remaining_months % 12
+    st.write(f"剩余还款时间: {years_left} 年 {months_left} 个月")
